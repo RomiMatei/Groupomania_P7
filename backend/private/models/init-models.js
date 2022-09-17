@@ -17,13 +17,13 @@ function initModels(sequelize) {
   var users = _users(sequelize, DataTypes);
 
   roles.belongsToMany(users, {
-    as: 'users',
+    as: 'userId_users',
     through: user_roles,
     foreignKey: 'roleId',
     otherKey: 'userId'
   });
   users.belongsToMany(roles, {
-    as: 'roles',
+    as: 'roleId_roles',
     through: user_roles,
     foreignKey: 'userId',
     otherKey: 'roleId'
