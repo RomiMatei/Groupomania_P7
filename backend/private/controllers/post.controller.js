@@ -1,4 +1,4 @@
-const config = require('../config/auth.config');
+const config = require('../config/authentification.conf');
 var jwt = require('jsonwebtoken');
 const fs = require('fs');
 const db = require('../models/index');
@@ -13,6 +13,7 @@ exports.createPost = async (req, res, next) => {
   if (req) {
     const token = req.headers['x-access-token'];
     const decoded = await jwt.verify(token, config.secret);
+
     userId = await User.findByPk(decoded.id);
   } else {
     userId = null;
@@ -23,12 +24,12 @@ exports.createPost = async (req, res, next) => {
       image = req.file.filename;
     }
   }
-
+  console.log(req.file);
   try {
+
     // Try to create post
     const response = await Post.create({
-      author: userId.get('user_id'),
-      title: req.body.title,
+      author: userId.get('id'),
       content: req.body.content,
       post_created: new Date().getTime(),
       image: image
@@ -40,6 +41,7 @@ exports.createPost = async (req, res, next) => {
 };
 
 exports.deletePost = async (req, res, next) => {
+  console.log(req);
   try {
     // Find post_id in DB
     const post = await Post.findByPk(req.params.id);
@@ -47,7 +49,7 @@ exports.deletePost = async (req, res, next) => {
 
     // Delete post in DB
     const result = await Post.destroy({
-      where: { post_id: req.params.id }
+      where: { id: req.params.id }
     }).then((val) => {
       // If image in the post, delete file in folder
       if (image) {
@@ -68,7 +70,13 @@ exports.allPosts = async (req, res, next) => {
   try {
     // Show all posts list
     const allPostsDb = await Post.findAll({
-      attributes: ['post_id'],
+      attributes: [
+        'id',
+        'author',
+        'content',
+        'post_created',
+        'image'
+      ],
       order: [['post_created', 'DESC']],
       raw: true
     });
@@ -109,7 +117,7 @@ exports.myPosts = async (req, res, next) => {
 
   try {
     const allPostsDb = await Post.findAll({
-      attributes: ['post_id'],
+      attributes: ['id'],
       where: { author: userId.user_id },
       order: [['post_created', 'DESC']],
       raw: true

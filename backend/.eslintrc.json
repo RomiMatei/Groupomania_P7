@@ -1,0 +1,37 @@
+{
+  "env": {
+    "commonjs": true,
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended","eslint-config-prettier"],
+  "overrides": [],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "modules": true,
+      "spread": true,
+      "restParams": true
+    },
+    "ecmaVersion": 2016,
+    "allowImportExportEverywhere": true,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "eslint-plugin-prettier",
+    "@babel"
+  ],
+  "rules": {
+    "prettier/prettier": "warn",
+    "linebreak-style": [2, "unix"],
+    "arrow-parens": ["error", "always"],
+    "arrow-body-style": [2, "as-needed"],
+    "no-unused-vars": "warn",
+    "import/imports-first": 0,
+    "import/newline-after-import": 0,
+    "import/no-dynamic-require": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-named-as-default": 0,
+    "import/prefer-default-export": 0
+  }
+}

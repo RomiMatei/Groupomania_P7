@@ -7,7 +7,7 @@ tokenCheck = (req, res, next) => {
   const token = req.headers['x-access-token'];
 
   if (!token) {
-    res.status(403).json({
+    return res.status(403).json({
       message: 'Access denied! Please try again.'
     });
   }
@@ -15,11 +15,11 @@ tokenCheck = (req, res, next) => {
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
       if (err.name === 'TokenExpiredError') {
-        res.status(511).json({
+        return res.status(511).json({
           message: 'Expired session!'
         });
       } else {
-        res.status(401).json({
+        return res.status(401).json({
           message: 'Not authorized!'
         });
       }

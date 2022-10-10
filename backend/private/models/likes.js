@@ -1,34 +1,35 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('sequelize')
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     'likes',
     {
-      like_id: {
+      id: {
         autoIncrement: true,
         type: DataTypes.INTEGER,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
       },
-      like_by: {
+      user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
           model: 'users',
-          key: 'user_id'
-        }
+          key: 'id',
+        },
       },
       post_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
           model: 'posts',
-          key: 'post_id'
-        }
+          key: 'id',
+        },
       },
-      liket_time: {
+      like_date: {
         type: DataTypes.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+      },
     },
     {
       sequelize,
@@ -39,19 +40,19 @@ module.exports = function (sequelize, DataTypes) {
           name: 'PRIMARY',
           unique: true,
           using: 'BTREE',
-          fields: [{ name: 'like_id' }]
+          fields: [{ name: 'id' }],
         },
         {
-          name: 'user_relation_like',
+          name: 'user_id',
           using: 'BTREE',
-          fields: [{ name: 'like_by' }]
+          fields: [{ name: 'user_id' }],
         },
         {
-          name: 'post_relation_like',
+          name: 'post_id',
           using: 'BTREE',
-          fields: [{ name: 'post_id' }]
-        }
-      ]
+          fields: [{ name: 'post_id' }],
+        },
+      ],
     }
-  );
-};
+  )
+}

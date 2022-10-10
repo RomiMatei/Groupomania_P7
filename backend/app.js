@@ -1,48 +1,48 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const dotenv = require("dotenv");
-dotenv.config();
+const express = require('express')
+const cors = require('cors')
+const path = require('path')
+const dotenv = require('dotenv')
+dotenv.config()
 
-const app = express();
+const app = express()
 
 var corsOptions = {
   origin: [
     'http://127.0.0.1:3000',
     'http://localhost:3000',
+    'http://127.0.0.1:3001',
+    'http://localhost:3001',
     'http://127.0.0.1:8081',
-    'http://localhost:8081'
+    'http://localhost:8081',
   ],
-  optionsSuccessStatus: 200
-};
+  optionsSuccessStatus: 200,
+}
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions))
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 // database
-const sequelize = require('./app/models/connection-Db');
+const sequelize = require('./private/models/database-connection')
 
-sequelize.sync();
+sequelize.sync()
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Bienvenue chez groupomania.' });
-});
+  res.json({ message: 'Bienvenue chez Groupomania.' })
+})
 
 // routes
-require('./app/routes/auth.routes')(app);
-require('./app/routes/user.routes')(app);
-require('./app/routes/post.routes')(app);
-require('./app/routes/comment.routes')(app);
-require('./app/routes/like.routes')(app);
-require('./app/routes/follow.routes')(app);
+require('./private/routes/auth.routes')(app)
+require('./private/routes/user.routes')(app)
+require('./private/routes/post.routes')(app)
+require('./private/routes/like.routes')(app)
 
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/public')))
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
-  console.log(`Serveur écoute sur le port ${PORT}.`);
-});
+  console.log(`Serveur écoute sur le port ${PORT}.`)
+})
 
-module.exports = app;
+module.exports = app

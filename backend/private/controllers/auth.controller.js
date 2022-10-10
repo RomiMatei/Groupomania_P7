@@ -4,19 +4,15 @@ const config = require('../config/authentification.conf');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = db.users;
-const Role = db.user_roles;
+const Role = db.users_roles;
 
 const Op = DbConnect.Sequelize.Op;
 
 exports.signup = (req, res) => {
   // Create new user in database
   User.create({
-    name: req.body.name,
-    last_name: req.body.last_name,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
-    birth_date: req.body.birth_date,
-    joined: new Date().getTime()
   })
     .then((user) => {
       if (req.body.roles) {
@@ -29,8 +25,7 @@ exports.signup = (req, res) => {
         }).then((roles) => {
           user.setRoles(roles).then(() => {
             res.json({
-              message:
-                'Félicitation votre compte a été créé avec succès!'
+              message: 'Félicitation votre compte a été créé avec succès!'
             });
           });
         });
@@ -38,68 +33,69 @@ exports.signup = (req, res) => {
         // When you create a user with admin role = 1
         user.setRoles([1]).then(() => {
           res.json({
-            message:
-              'Félicitation votre compte a été créé avec succès!'
+            message: 'Félicitation votre compte a été créé avec succès!'
           });
         });
       }
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).json({ message: err.message });
     });
 };
 
-exports.signin = (req, res) => {
+exports.signin = async (req, res) => {
   // Search in database a user with mail address, use findOne function in Sequelize
-  User.findOne({
-    where: {
-      email: req.body.email
-    }
-  })
-    .then((user) => {
+  try {
+    await User.findOne({
+      where: {
+        email: req.body.email
+      }
+    }).then((user) => {
       // If the user has not been found return error
       if (!user) {
-        res.status(404).json({ message: 'User not found.' });
+        return res.status(404).json({ message: 'Adresse email non valide' });
       }
       // Check user password with bcrypt is true
       let passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
       );
+      console.log(user);
 
       // If user password is not valid return error message
       if (!passwordIsValid) {
-        res.status(401).json({
-          accessToken: null,
-          message: 'Password wrong!'
+        return res.status(401).json({
+          token: null,
+          message: 'Mot de passe incorrecte'
         });
       }
 
       // Generate a token with JWT for user session
-      let token = jwt.sign({ id: user.user_id }, config.secret, {
+      let token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: 86400 // 24 heures
       });
 
       // Return user informations with role and ID
-      let authorities = [];
-      user.getRoles().then((roles) => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push('ROLE_' + roles[i].name.toUpperCase());
-        }
+      Role.findOne({
+        where: { userId: user.id },
+        attributes: ['roleId'],
+        raw: true
+      }).then((roles) => {
+        let userRole = roles.roleId;
+
         if (user.image) {
           user.image = process.env.BACKEND_URL + '/images/' + user.image;
         }
-        res.status(200).json({
-          user_id: user.user_id,
-          name: user.name,
-          last_name: user.last_name,
+        return res.status(200).json({
+          id: user.id,
           image: user.image,
-          roles: authorities,
-          accessToken: token
+          roles: userRole,
+          token: token
         });
       });
-    })
-    .catch((err) => {
-      res.status(500).json({ message: err.message });
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };

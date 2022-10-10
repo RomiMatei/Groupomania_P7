@@ -1,3 +1,3 @@
 module.exports = {
-  secret: "OpenClassRoomSecret2022."
-};
+  secret: '000000',
+}

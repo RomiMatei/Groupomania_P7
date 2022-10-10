@@ -1,55 +1,32 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('sequelize')
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     'users',
     {
-      user_id: {
+      id: {
         autoIncrement: true,
         type: DataTypes.INTEGER,
         allowNull: false,
-        primaryKey: true
-      },
-      name: {
-        type: DataTypes.STRING(255),
-        allowNull: false
-      },
-      last_name: {
-        type: DataTypes.STRING(255),
-        allowNull: false
+        primaryKey: true,
       },
       email: {
         type: DataTypes.STRING(255),
         allowNull: false,
-        unique: 'email'
+        unique: 'email',
       },
       password: {
         type: DataTypes.STRING(255),
-        allowNull: false
-      },
-      joined: {
-        type: DataTypes.DATE,
-        allowNull: true
+        allowNull: false,
       },
       image: {
         type: DataTypes.STRING(255),
-        allowNull: true
+        allowNull: true,
       },
-      cover_image: {
-        type: DataTypes.STRING(255),
-        allowNull: true
+      joined: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
       },
-      work_department: {
-        type: DataTypes.STRING(255),
-        allowNull: true
-      },
-      bio: {
-        type: DataTypes.TEXT,
-        allowNull: true
-      },
-      birth_date: {
-        type: DataTypes.DATEONLY,
-        allowNull: true
-      }
     },
     {
       sequelize,
@@ -60,15 +37,15 @@ module.exports = function (sequelize, DataTypes) {
           name: 'PRIMARY',
           unique: true,
           using: 'BTREE',
-          fields: [{ name: 'user_id' }]
+          fields: [{ name: 'id' }],
         },
         {
           name: 'email',
           unique: true,
           using: 'BTREE',
-          fields: [{ name: 'email' }]
-        }
-      ]
+          fields: [{ name: 'email' }],
+        },
+      ],
     }
-  );
-};
+  )
+}

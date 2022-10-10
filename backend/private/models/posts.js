@@ -1,38 +1,34 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('sequelize')
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     'posts',
     {
-      post_id: {
+      id: {
         autoIncrement: true,
         type: DataTypes.INTEGER,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
       },
       author: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
           model: 'users',
-          key: 'user_id'
-        }
-      },
-      title: {
-        type: DataTypes.STRING(255),
-        allowNull: false
+          key: 'id',
+        },
       },
       content: {
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull: false,
       },
       post_created: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
       },
       image: {
         type: DataTypes.STRING(255),
-        allowNull: true
-      }
+        allowNull: true,
+      },
     },
     {
       sequelize,
@@ -43,19 +39,14 @@ module.exports = function (sequelize, DataTypes) {
           name: 'PRIMARY',
           unique: true,
           using: 'BTREE',
-          fields: [{ name: 'post_id' }]
+          fields: [{ name: 'id' }],
         },
         {
-          name: 'post_id',
+          name: 'author',
           using: 'BTREE',
-          fields: [{ name: 'post_id' }]
+          fields: [{ name: 'author' }],
         },
-        {
-          name: 'author_relation',
-          using: 'BTREE',
-          fields: [{ name: 'author' }]
-        }
-      ]
+      ],
     }
-  );
-};
+  )
+}

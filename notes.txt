@@ -1,0 +1,2 @@
+Permet de générer les fichiers pour l'Orm sequelize depuis la base de donnée
+sequelize-auto -o "./models" -h 127.0.0.1 -d groupomania -u groupomania -x OpenClassRoomSecret2022. -p 3306  -e mysql -l es6
