@@ -24,9 +24,7 @@ export { PostsList };
 
 function PostsList() {
   const dispatch = useDispatch();
-  // const { posts } = useSelector((x) => x.posts);
   const posts = useSelector((state) => state.posts);
-  // const { posts } = useSelector((state) => state.posts);
 
   useEffect(() => {
     dispatch(postAll());
@@ -35,8 +33,8 @@ function PostsList() {
   }, [dispatch]);
 
   let sortedPosts = [];
-  if (posts.posts.length) {
-    sortedPosts = [...posts.posts].sort((a, b) => b.id - a.id);
+  if (posts.postsList.length) {
+    sortedPosts = [...posts.postsList].sort((a, b) => b.id - a.id);
   }
 
   return (
@@ -44,8 +42,8 @@ function PostsList() {
       <CreatePost />
       {sortedPosts.length && (
         <div className="post-section">
-          {sortedPosts.map((post) => (
-            <PostContent key={post.id} post={post} />
+          {sortedPosts.map((postItem) => (
+            <PostContent key={postItem.id} post={postItem} />
           ))}
         </div>
       )}

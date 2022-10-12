@@ -13,8 +13,6 @@ module.exports = function (app) {
 
   // Posts
   app.get('/api/posts-all', [authJwt.tokenCheck], postController.allPosts)
-  app.get('/api/posts-get/:id', [authJwt.tokenCheck], postController.onePost)
-  app.get('/api/posts-my/:id', [authJwt.tokenCheck], postController.myPosts)
   app.post(
     '/api/posts-create',
     [authJwt.tokenCheck],

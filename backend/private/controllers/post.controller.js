@@ -1,134 +1,99 @@
-const config = require('../config/authentification.conf');
-var jwt = require('jsonwebtoken');
-const fs = require('fs');
-const db = require('../models/index');
-const Post = db.posts;
-const User = db.users;
+const config = require('../config/authentification.conf')
+var jwt = require('jsonwebtoken')
+const fs = require('fs')
+const db = require('../models/index')
+const Post = db.posts
+const User = db.users
+const Like = db.likes
 
 exports.createPost = async (req, res, next) => {
-  let userId;
-  let image = null;
+  let userId
+  let image = null
 
   // Check if user authorized to create a post
   if (req) {
-    const token = req.headers['x-access-token'];
-    const decoded = await jwt.verify(token, config.secret);
+    const token = req.headers['x-access-token']
+    const decoded = await jwt.verify(token, config.secret)
 
-    userId = await User.findByPk(decoded.id);
+    userId = await User.findByPk(decoded.id)
   } else {
-    userId = null;
+    userId = null
   }
 
   if (req.file) {
     if (req.file.fieldname === 'image') {
-      image = req.file.filename;
+      image = req.file.filename
     }
   }
-  console.log(req.file);
   try {
-
     // Try to create post
     const response = await Post.create({
       author: userId.get('id'),
       content: req.body.content,
       post_created: new Date().getTime(),
-      image: image
-    });
-    res.status(200).json(response);
+      image: image,
+      isLiked: false,
+      likes: []
+    })
+    res.status(200).json(response)
   } catch (err) {
-    res.status(500).json({ message: err });
+    res.status(500).json({ message: err })
   }
-};
+}
 
 exports.deletePost = async (req, res, next) => {
-  console.log(req);
   try {
     // Find post_id in DB
-    const post = await Post.findByPk(req.params.id);
-    const image = post.image;
+    const post = await Post.findByPk(req.params.id)
+    const image = post.image
 
     // Delete post in DB
     const result = await Post.destroy({
-      where: { id: req.params.id }
+      where: { id: req.params.id },
     }).then((val) => {
       // If image in the post, delete file in folder
       if (image) {
-        fs.unlink(`public/images/${image}`, (err) => {
+        fs.unlink(`${process.env.IMAGE_URL}${image}`, (err) => {
           if (err) {
-            res.status(500).json({ message: err });
+            res.status(500).json({ message: err })
           }
-        });
+        })
       }
-    });
-    res.status(200).json(result);
+    })
+    res.status(200).json(result)
   } catch (err) {
-    res.status(500).json({ message: err });
+    res.status(500).json({ message: err })
   }
-};
+}
 
 exports.allPosts = async (req, res, next) => {
+  const userId = req.userId
+
   try {
     // Show all posts list
     const allPostsDb = await Post.findAll({
-      attributes: [
-        'id',
-        'author',
-        'content',
-        'post_created',
-        'image'
-      ],
       order: [['post_created', 'DESC']],
-      raw: true
-    });
-
+      raw: false,
+      include: 'likes',
+    })
     Promise.all(allPostsDb).then((values) => {
-      res.status(200).json(values);
-    });
+      values.map((value) => {
+        var isLiked = value.likes.find((item) => item.user_id === userId)
+        value.dataValues['isLiked'] = false
+        value.dataValues['countLikes'] = value.likes.length
+
+        if (value.dataValues.image) {
+          value.dataValues['image'] =
+            process.env.BACKEND_URL + '/images/' + value.dataValues.image
+        }
+
+        if (isLiked) {
+          value.dataValues['isLiked'] = true
+        }
+      })
+      res.status(200).json(values)
+    })
   } catch (err) {
-    res.status(500).json({ message: err });
+    res.status(500).json({ message: err })
   }
-};
-
-exports.onePost = async (req, res, next) => {
-  try {
-    // Show only one post
-    const PostsDb = await Post.findByPk(req.params.id, { raw: true });
-    if (PostsDb.image) {
-      const imageUrl = process.env.BACKEND_URL + '/images/' + PostsDb.image;
-      PostsDb.image = imageUrl;
-    }
-    res.status(200).json(PostsDb);
-  } catch (err) {
-    console.log(err);
-
-    res.status(500).json({ message: err });
-  }
-};
-
-exports.myPosts = async (req, res, next) => {
-  let user_id = req.params.id;
-  let userId = null;
-
-  if (req) {
-    userId = await User.findByPk(user_id);
-  } else {
-    userId = null;
-  }
-
-  try {
-    const allPostsDb = await Post.findAll({
-      attributes: ['id'],
-      where: { author: userId.user_id },
-      order: [['post_created', 'DESC']],
-      raw: true
-    });
-
-    Promise.all(allPostsDb).then((values) => {
-      let result = values;
-
-      res.status(200).json(result);
-    });
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-};
+}

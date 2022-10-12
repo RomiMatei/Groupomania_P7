@@ -61,7 +61,6 @@ exports.signin = async (req, res) => {
         req.body.password,
         user.password
       );
-      console.log(user);
 
       // If user password is not valid return error message
       if (!passwordIsValid) {
@@ -89,6 +88,7 @@ exports.signin = async (req, res) => {
         }
         return res.status(200).json({
           id: user.id,
+          email: user.email,
           image: user.image,
           roles: userRole,
           token: token

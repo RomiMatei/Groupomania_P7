@@ -3,20 +3,20 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { userActions, postsActions } from 'features';
 import { UsersList } from 'components/usersList/usersList';
-import { PostsList } from 'components/posts/posts';
+import { ProfileComponent } from 'components/profile/profile';
 import { Container, Grid } from '@mui/material';
 
-export { Home };
+export { Profile };
 
-function Home() {
+function Profile() {
   const dispatch = useDispatch();
   // const { user: authUser } = useSelector((x) => x.auth);
 
-  useEffect(() => {
-    dispatch(userActions.getAll());
+  // useEffect(() => {
+  //   dispatch(userActions.getAll());
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
     <Container maxWidth="md" sx={{mt: 3}}>
@@ -25,7 +25,7 @@ function Home() {
           <UsersList />
         </Grid>
         <Grid item xs={12} md={8}>
-          <PostsList />
+          <ProfileComponent/>
         </Grid>
       </Grid>
     </Container>

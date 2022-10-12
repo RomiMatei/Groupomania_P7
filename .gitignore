@@ -178,6 +178,6 @@ lib
 node_modules
 **/package-lock.json
 app/.eslintrc.json
-.env
+# .env
 memo.txt
 # backend/public/*

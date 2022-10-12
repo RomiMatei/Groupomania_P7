@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { NavLink, Link } from 'react-router-dom';
+import { history } from 'helpers';
+
 import { useSelector, useDispatch } from 'react-redux';
 
 import { authActions } from 'features';
@@ -42,6 +44,10 @@ function Nav() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const getMyProfile = () => {
+    history.navigate(`/user/${authUser.id}`);
   };
 
   // only show nav when logged in
@@ -106,11 +112,7 @@ function Nav() {
                 display: { xs: 'block', md: 'none' }
               }}
             >
-              {/* {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))} */}
+              <Typography textAlign="center">Test</Typography>
             </Menu>
           </Box>
           <HomeMaxRounded sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -166,11 +168,12 @@ function Nav() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {/* {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))} */}
+              <MenuItem key="1" onClick={getMyProfile}>
+                <Typography textAlign="center">Editer Mon Profil</Typography>
+              </MenuItem>
+              <MenuItem key="2" onClick={logout}>
+                <Typography textAlign="center">Déconnexion</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
