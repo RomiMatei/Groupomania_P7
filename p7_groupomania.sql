@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mar. 18 oct. 2022 à 21:17
+-- Généré le : mar. 18 oct. 2022 à 21:23
 -- Version du serveur : 10.6.7-MariaDB-2ubuntu1.1
 -- Version de PHP : 8.1.2
 
@@ -34,13 +34,6 @@ CREATE TABLE `likes` (
   `like_date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Déchargement des données de la table `likes`
---
-
-INSERT INTO `likes` (`id`, `user_id`, `post_id`, `like_date`) VALUES
-(20, 1, 130, '2022-10-16 10:06:26');
-
 -- --------------------------------------------------------
 
 --
@@ -60,8 +53,7 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `author`, `content`, `post_created`, `image`) VALUES
-(130, 1, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy 12345678', '2022-10-15 22:00:17', '6c402528-9882-4e07-82df-1544d50a410b.png'),
-(131, 1, 'Lorem ipsum dolor sit amet, eirmod tempor invidunt ut labore et dolore magna aliquyam erat 12345', '2022-10-16 14:17:42', NULL);
+(132, 1, 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ', '2022-10-18 19:22:40', '5ba356fd-7d9a-4f84-98ca-18ab110a7772.jpg');
 
 -- --------------------------------------------------------
 
@@ -103,21 +95,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `email`, `password`, `image`, `joined`, `role`) VALUES
 (1, 'admin@groupomania.com', '$2a$08$mGcQVFimZgIWpRnwvK6EEeSwCjInmLrkWUf/GG90FCtfB6ZLVPsFi', 'null', '2022-10-02 20:35:06', 2),
-(2, 'sophie@groupomania.com', '$2a$08$qiKFNfWM7R0v9GWjaA7mx.pWGgFPlG79xQAPGcRS0MeHeeivVWDNi', NULL, '2022-10-02 22:42:48', 0),
-(4, 'zuher1@groupomania.com', '$2a$08$gLyVnCu9ao2Yw0sFmRK4pOJZyQYJr6d9BdfyQuzNmANipXHlJY00a', NULL, '2022-10-14 17:45:13', 0),
-(5, 'zuher2@groupomania.com', '$2a$08$BFvt0wn6xTMP.B1nRKC46uX83m.RlBoAIxREY8K8UitfNV9yrxgD2', NULL, '2022-10-14 18:07:39', 1),
-(6, 'zuher52@groupomania.com', '$2a$08$vDuKI075feNm9jLo3tOgf.1HS3fhfRt5SGI29SdJ7MoVSkF9epbdm', NULL, '2022-10-14 18:39:30', 1),
-(7, 'zuhedddr2@groupomania.com', '$2a$08$GnmNqC.u5O0rjbOhcoMSuOKE4OphAsZjE8PFn4NBhnlfWg.0MM03O', NULL, '2022-10-14 18:47:29', 1),
-(8, 'zuhessssr@groupomania.com', '$2a$08$jaPb/7b8RVSW2uBtJ57MAOf9Ht7wJxnLflX/hVXQ9gb9AiyTuj8fK', NULL, '2022-10-14 18:48:16', 1),
-(9, 'zuheddddr1@groupomania.com', '$2a$08$Wp2qmSymwGVtrz0WJHq3YOIU9RSoZb.vHds274HkFiCKGPGjhM7L2', NULL, '2022-10-14 18:50:02', 1),
-(10, 'zuhzzer1@groupomania.com', '$2a$08$I.pufUFqGVN6JwAMD6EzQemTazPV1qGO3SKnAphpwI9l4Nk86OIFO', NULL, '2022-10-14 18:51:35', 1),
-(11, 'zuhexr2@groupomania.com', '$2a$08$FpE9qLAvTnvPCWHVHsYwNeiy24fkr/aFkNdWllt8RBpmGaBW23Wdu', NULL, '2022-10-14 18:52:12', 1),
-(12, 'zuhesdsdr1@groupomania.com', '$2a$08$3M0BsnE0D0Y8DMWR7sm6be5vMO6eHceX3e1zIqyphVyotWpmS1r2q', NULL, '2022-10-14 18:53:03', 1),
-(13, 'zsuher@groupomania.com', '$2a$08$mUedwf1nX2N1qsxzxzM8PuuNvGY9CfKr7lEFzhIXrD8ojNThgRqyy', NULL, '2022-10-14 18:53:47', 1),
-(14, 'zuhfgdger@groupomania.com', '$2a$08$npUBQTAMa7zSbUURbKspvua16PouT95JFXAx4CWEtWcecf7nGkZCi', NULL, '2022-10-14 19:00:01', 1),
-(15, 'zuher19@groupomania.com', '$2a$08$lYBZXeAU.n1QbICdZ8pRZuEq0vktSzkA77cHqFcKDQgEGQFt2LsTy', NULL, '2022-10-15 19:56:43', 1),
-(16, 'zuher14@groupomania.com', '$2a$08$XiASdtVm3HTIacpjTUOm6Ok.XM7yp3Gxzmg/KepuBIwFtClg3doP.', NULL, '2022-10-15 19:57:40', 1),
-(17, 'zuhe87r@groupomania.com', '$2a$08$ZZISoQ2K1C6KWUEsLoDUEuEKjI5TE9wfwAAw2OK5/PupkRYLlQYsW', NULL, '2022-10-15 19:59:07', 1);
+(2, 'sophie@groupomania.com', '$2a$08$qiKFNfWM7R0v9GWjaA7mx.pWGgFPlG79xQAPGcRS0MeHeeivVWDNi', NULL, '2022-10-02 22:42:48', 0);
 
 --
 -- Index pour les tables déchargées
@@ -167,7 +145,7 @@ ALTER TABLE `likes`
 -- AUTO_INCREMENT pour la table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
 
 --
 -- AUTO_INCREMENT pour la table `users`
