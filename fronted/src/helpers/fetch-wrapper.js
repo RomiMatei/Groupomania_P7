@@ -76,8 +76,6 @@ function authToken() {
 
 function handleResponse(response) {
   const data = response.data;
-  console.log(data);
-
   if (response.statusText !== 'OK') {
     if ([401, 403, 511].includes(response.status) && authToken()) {
       // auto logout if 401 Unauthorized or 403 Forbidden and 511 response returned from api

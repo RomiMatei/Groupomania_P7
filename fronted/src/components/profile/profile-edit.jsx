@@ -28,7 +28,6 @@ function ProfileEditComponent() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const [userImage, setUserImage] = useState(null);
-  const [isEdit, setIsEdit] = useState(false);
   const [formImage, setFormImage] = useState(userImage);
   const [formImagePreview, setFormImagePreview] = useState(userImage);
   const [formMail, setFormMail] = useState(user.email);
@@ -40,11 +39,12 @@ function ProfileEditComponent() {
 
   const checkUserImage = () => {
     if (!user.image) {
-      setFormImagePreview('https://bootdey.com/img/Content/avatar/avatar7.png');
+      setUserImage('https://bootdey.com/img/Content/avatar/avatar7.png');
     }
   };
 
   const selectFile = (event) => {
+    console.log(event);
     setFormImage(event.target.files[0]);
     setFormImagePreview(URL.createObjectURL(event.target.files[0]));
   };
@@ -68,7 +68,7 @@ function ProfileEditComponent() {
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors, isSubmitting } = formState;
 
-  const onFormEditSubmit = ({email, password, image}) => {
+  const onFormEditSubmit = ({ email, password, formImage }) => {
     const formData = new FormData();
     formData.append('id', user.id);
     formData.append('email', email);
@@ -91,19 +91,21 @@ function ProfileEditComponent() {
             ></Avatar>
           </Grid>
           <Grid item xs={8}>
-            <Button variant="outlined" startIcon={<PhotoCamera />}>
-              Changer ma photo
-              <Input
-                // id="image"
+            <label htmlFor="image">
+              <input
+                id="image"
                 name="image"
                 hidden
                 style={{ display: 'none' }}
                 type="file"
                 accept="image/*"
                 onChange={selectFile}
-                {...register('image')}
+                // {...register('image')}
               />
-            </Button>
+              <Button color="secondary" variant="contained" component="span">
+                Changer ma photo
+              </Button>
+            </label>
           </Grid>
           <Grid item xs={12}>
             <TextField
