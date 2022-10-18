@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-// import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-
 import { useSelector, useDispatch } from 'react-redux';
 
-import { history } from 'helpers';
-import { authActions } from 'features';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import { Typography, Alert, Link, Box, TextField, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import SaveIcon from '@mui/icons-material/Save';
+
+import { history } from 'helpers';
+import { authLogin } from 'features';
+
 
 export { Login };
 
@@ -27,7 +27,12 @@ function Login() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // form validation rules
+  function registerPage() {
+    // if guest user click register, redirect to register page
+    history.navigate('/register');
+  }
+
+  // form validation rules with YUP
   const validationSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string().required('Password is required')
@@ -39,7 +44,7 @@ function Login() {
   const { errors, isSubmitting } = formState;
 
   function onSubmit({ email, password }) {
-    return dispatch(authActions.login({ email, password }));
+    return dispatch(authLogin({ email, password }));
   }
 
   return (
@@ -104,6 +109,9 @@ function Login() {
           Connexion
         </Button>
       )}
+      <Link href="#" onClick={registerPage} variant="body2">
+        {'Créer un compte'}
+      </Link>
     </Box>
   );
 }

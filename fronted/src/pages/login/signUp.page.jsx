@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { history } from 'helpers';
 import { SignUp } from 'components/loginRegister/signUp';
 
@@ -8,9 +8,7 @@ import { Container, Paper, Box } from '@mui/material';
 export { SignUpPage };
 
 function SignUpPage() {
-  // const dispatch = useDispatch();
   const authUser = useSelector((x) => x.auth.user);
-  // const authError = useSelector((x) => x.auth.error);
 
   useEffect(() => {
     // redirect to home if already logged in

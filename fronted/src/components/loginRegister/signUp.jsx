@@ -1,40 +1,33 @@
-import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
-// import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 
-
-import { history } from 'helpers';
-import { authActions } from 'features';
 import { Typography, Alert, Link, Box, TextField, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import SaveIcon from '@mui/icons-material/Save';
+
+import { history } from 'helpers';
+import { signUp } from 'features';
 
 export { SignUp };
 
 function SignUp() {
   const dispatch = useDispatch();
-  const authUser = useSelector((x) => x.auth.user);
   const authError = useSelector((x) => x.auth.error);
 
-  useEffect(() => {
-    // redirect to home if already logged in
-    if (authUser) history.navigate('/');
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // form validation rules
+   // Sign Up form validation rules
   const validationSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required').email('Email is invalid'),
-    password: Yup.string().required('Password is required'),
+    email: Yup.string().required('Email requis').email('Email invalide'),
+    password: Yup.string().required('Mot de passe requis'),
     passwordConfirmation: Yup.string()
       .label('confirm password')
       .required()
-      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+      .oneOf(
+        [Yup.ref('password'), null],
+        'Les mots de passes doivent être identiques'
+      )
   });
   const formOptions = { resolver: yupResolver(validationSchema) };
 
@@ -43,8 +36,14 @@ function SignUp() {
   const { errors, isSubmitting } = formState;
 
   function onSubmit({ email, password }) {
-    return dispatch(authActions.signup({ email, password }));
+    return dispatch(signUp({ email, password }));
   }
+
+  // if user want to return connection page
+  function connectionPage() {
+    history.navigate('/login');
+  }
+
   return (
     <Box
       component={'form'}
@@ -119,6 +118,9 @@ function SignUp() {
           Créer Mon Compte
         </Button>
       )}
+      <Link href="#" onClick={connectionPage} variant="body2">
+        {'Connection'}
+      </Link>
     </Box>
   );
 }

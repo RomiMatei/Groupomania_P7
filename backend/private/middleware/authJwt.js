@@ -8,7 +8,10 @@ tokenCheck = (req, res, next) => {
 
   if (!token) {
     return res.status(403).json({
-      message: 'Access denied! Please try again.',
+      message: {
+        message: 'Access denied! Please try again.',
+        severity: 'error',
+      },
     })
   }
 

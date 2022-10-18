@@ -20,7 +20,7 @@ module.exports = function (app) {
   app.get('/api/user/:id', [authJwt.tokenCheck], controller.userGet)
   app.delete('/api/user/:id', [authJwt.tokenCheck], controller.userDelete)
   app.put(
-    '/api/user-update/:id',
+    '/api/user-update',
     [authJwt.tokenCheck],
     multer,
     controller.userUpdate

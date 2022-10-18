@@ -1,43 +1,42 @@
-const config = require('../config/authentification.conf')
-var jwt = require('jsonwebtoken')
 const fs = require('fs')
 const db = require('../models/index')
 const Post = db.posts
-const User = db.users
-const Like = db.likes
 
 exports.createPost = async (req, res, next) => {
-  let userId
+  let userId = req.userId
   let image = null
 
-  // Check if user authorized to create a post
-  if (req) {
-    const token = req.headers['x-access-token']
-    const decoded = await jwt.verify(token, config.secret)
-
-    userId = await User.findByPk(decoded.id)
-  } else {
-    userId = null
-  }
-
+  // Check if file in post
   if (req.file) {
     if (req.file.fieldname === 'image') {
       image = req.file.filename
     }
   }
   try {
-    // Try to create post
-    const response = await Post.create({
-      author: userId.get('id'),
+    // Create a post and return with values. Image field is overwritten for Redux state
+    await Post.create({
+      author: userId,
       content: req.body.content,
       post_created: new Date().getTime(),
       image: image,
-      isLiked: false,
-      likes: []
+    }).then((createdPost) => {
+      createdPost.dataValues['message'] = {
+        message: 'Félicitation votre message est posté',
+        severity: 'success',
+      }
+      if (createdPost.dataValues.image) {
+        const imageName = createdPost.dataValues.image
+        createdPost.dataValues.image = `${process.env.BACKEND_URL}/images/${imageName}`
+      }
+      res.status(200).json(createdPost)
     })
-    res.status(200).json(response)
   } catch (err) {
-    res.status(500).json({ message: err })
+    res.status(500).json({
+      message: {
+        message: err,
+        severity: 'error',
+      },
+    })
   }
 }
 
@@ -50,19 +49,44 @@ exports.deletePost = async (req, res, next) => {
     // Delete post in DB
     const result = await Post.destroy({
       where: { id: req.params.id },
-    }).then((val) => {
+    }).then(() => {
       // If image in the post, delete file in folder
       if (image) {
-        fs.unlink(`${process.env.IMAGE_URL}${image}`, (err) => {
-          if (err) {
-            res.status(500).json({ message: err })
-          }
-        })
+        try {
+          fs.unlink(`public/images/${image}`, (err) => {
+            if (err) {
+              res.status(404).json({
+                message: {
+                  message: err,
+                  severity: 'error',
+                },
+              })
+            }
+          }) // end unlink
+        } catch (err) {
+          res.status(404).json({
+            message: {
+              message: err,
+              severity: 'error',
+            },
+          })
+        }
       }
     })
-    res.status(200).json(result)
+    res.status(200).json({
+      result,
+      message: {
+        message: 'Post supprimé avec succès',
+        severity: 'success',
+      },
+    })
   } catch (err) {
-    res.status(500).json({ message: err })
+    res.status(500).json({
+      message: {
+        message: err,
+        severity: 'error',
+      },
+    })
   }
 }
 
@@ -70,7 +94,7 @@ exports.allPosts = async (req, res, next) => {
   const userId = req.userId
 
   try {
-    // Show all posts list
+    // Show all posts list and JOIN Likes DB
     const allPostsDb = await Post.findAll({
       order: [['post_created', 'DESC']],
       raw: false,
@@ -82,11 +106,13 @@ exports.allPosts = async (req, res, next) => {
         value.dataValues['isLiked'] = false
         value.dataValues['countLikes'] = value.likes.length
 
+        // Add backend URL for image
         if (value.dataValues.image) {
           value.dataValues['image'] =
             process.env.BACKEND_URL + '/images/' + value.dataValues.image
         }
 
+        // Check if is liked and write variable
         if (isLiked) {
           value.dataValues['isLiked'] = true
         }
@@ -95,5 +121,52 @@ exports.allPosts = async (req, res, next) => {
     })
   } catch (err) {
     res.status(500).json({ message: err })
+  }
+}
+
+exports.updatePost = async (req, res, next) => {
+  const userId = req.userId
+  let image = undefined
+  const postId = req.body.id
+
+  // Check if file in post
+  if (req.file) {
+    if (req.file.fieldname === 'image') {
+      image = req.file.filename
+    }
+  }
+  try {
+    const dataValues = {
+      author: userId,
+      content: req.body.content,
+    }
+    if (image) {
+      dataValues['image'] = image
+    }
+    // Update a post and return with values. Image field is overwritten for Redux state
+    const result = await Post.update(dataValues, {
+      where: { id: postId },
+    }).then((updatePost) => {
+      console.log(updatePost)
+    })
+    if (image) {
+      dataValues['image'] = process.env.BACKEND_URL + '/images/' + image
+    }
+    dataValues['id'] = postId
+    res.status(200).json({
+      result,
+      dataValues,
+      message: {
+        message: 'Post mis à jour avec succès',
+        severity: 'success',
+      },
+    })
+  } catch (err) {
+    res.status(500).json({
+      message: {
+        message: err,
+        severity: 'error',
+      },
+    })
   }
 }

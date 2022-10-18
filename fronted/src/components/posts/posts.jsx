@@ -1,20 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-// import { postsActions } from 'features';
 import { postAll } from '../../features/posts/posts.actions';
 
-import { LikeUnlike } from 'components/likes/likes';
 import { CreatePost } from 'components/posts/post-create';
 import { PostContent } from 'components/posts/post-content';
-// import './usersList.css';
+
 import {
-  Button,
   Card,
-  CardMedia,
   CardContent,
   CardHeader,
-  Typography,
   Skeleton,
   IconButton
 } from '@mui/material';
@@ -40,7 +35,7 @@ function PostsList() {
   return (
     <div className="posts">
       <CreatePost />
-      {sortedPosts.length && (
+      {sortedPosts.length !== 0 && (
         <div className="post-section">
           {sortedPosts.map((postItem) => (
             <PostContent key={postItem.id} post={postItem} />
@@ -48,7 +43,7 @@ function PostsList() {
         </div>
       )}
       {posts.loading && (
-        <Card sx={{ m: 2 }}>
+        <Card sx={{ m: 0 }}>
           <CardHeader
             avatar={
               <Skeleton

@@ -1,43 +1,33 @@
-const config = require('../config/authentification.conf')
-var jwt = require('jsonwebtoken')
 const db = require('../models/index')
-const Post = db.posts
 const Like = db.likes
-const User = db.users
 
 exports.postLike = async (req, res, next) => {
   const userId = req.userId
   let postId = req.params.id
 
-  if (req) {
-    const token = req.headers['x-access-token']
-    const decoded = await jwt.verify(token, config.secret)
-
-    userId = await User.findByPk(decoded.id)
-  } else {
-    userId = null
-  }
-
+  // find with sequelize all likes in this post with post_id and user_id
   const likeDislike = await Like.findAll({
-    where: { post_id: postId, user_id: userId.get('id') },
+    where: { post_id: postId, user_id: userId },
     raw: true,
   })
   const result = { userLiked: 0 }
-  // console.log(likeDislike)
+
+  // if user is liked remove her like else create like
   if (likeDislike.length > 0) {
     await Like.destroy({
-      where: { post_id: postId, user_id: userId.get('id') },
+      where: { post_id: postId, user_id: userId },
     })
     result['userLiked'] = 0
   } else {
     await Like.create({
       post_id: postId,
-      user_id: userId.get('id'),
+      user_id: userId,
       like_date: new Date().getTime(),
     })
     result['userLiked'] = 1
   }
 
+  // Count total like for this post
   const likeDislikeCount = await Like.findAll({
     where: { post_id: postId },
     raw: true,

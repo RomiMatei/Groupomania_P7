@@ -19,7 +19,12 @@ module.exports = function (app) {
     multer,
     postController.createPost
   )
-  // app.put('/api/posts-update', [authJwt.tokenCheck], postController.updatePost);
+  app.put(
+    '/api/posts-update',
+    [authJwt.tokenCheck],
+    multer,
+    postController.updatePost
+  )
   app.delete(
     '/api/posts-delete/:id',
     [authJwt.tokenCheck],

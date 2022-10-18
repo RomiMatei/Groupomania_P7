@@ -1,40 +1,77 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
 
-// import { postsActions } from 'features';
-import { postAll } from '../../features/posts/posts.actions';
-
-import { LikeUnlike } from 'components/likes/likes';
-import { PostContent } from 'components/posts/post-content';
-// import './usersList.css';
+import { ProfileEditComponent } from './profile-edit';
+// import { postAll } from '../../features/posts/posts.actions';
+import './profile.css';
 import {
   Button,
-  Card,
-  CardMedia,
-  CardContent,
-  CardHeader,
+  Grid,
+  Input,
+  Box,
+  Paper,
   Typography,
-  Skeleton,
-  IconButton
+  TextField,
+  IconButton,
+  Avatar
 } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { PhotoCamera } from '@mui/icons-material';
 
 export { ProfileComponent };
 
 function ProfileComponent() {
   const dispatch = useDispatch();
+  const { register, handleSubmit } = useForm();
+
   const user = useSelector((state) => state.auth.user);
+  const [userImage, setUserImage] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
+  const [formImage, setFormImage] = useState(userImage);
+  const [formMail, setFormMail] = useState(user.email);
 
-  // useEffect(() => {
-  //   dispatch(postAll());
+  useEffect(() => {
+    checkUserImage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [dispatch]);
+  const checkUserImage = () => {
+    if (!user.image) {
+      setUserImage('https://bootdey.com/img/Content/avatar/avatar7.png');
+    }
+  };
+
+  const handleEdit = () => {
+    setIsEdit(true);
+  };
 
   return (
-    <div className="posts">
-    {user.id}
+    <Box className="profileCompo">
+      <Paper elevation={3} sx={{ padding: 3 }}>
+        <Typography variant="h1" gutterBottom className="profileTitle">
+          Mon Profile
+        </Typography>
+        {!isEdit && (
+          <Fragment>
+            <Avatar
+              aria-label="recipe"
+              className="userAvatar"
+              src={userImage}
+              alt={user.email}
+            ></Avatar>
+            <Typography variant="subtitle1" gutterBottom>
+              {user.email}
+            </Typography>
+            <Button variant="text" onClick={handleEdit}>
+              Editer Mon Profile
+            </Button>
+          </Fragment>
+        )}
 
-    </div>
+        {isEdit && (
+          <ProfileEditComponent/>
+        )}
+      </Paper>
+    </Box>
   );
 }

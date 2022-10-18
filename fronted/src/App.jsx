@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { useEffect, Fragment, useState } from 'react';
+
 import {
   Routes,
   Route,
@@ -8,33 +9,48 @@ import {
 } from 'react-router-dom';
 
 import { history } from 'helpers';
-import { Nav, PrivateRoute } from 'components';
+import { Nav, PrivateRoute, MessageSnackBar } from 'components';
 import { Home } from 'pages/home';
 import { Profile } from 'pages/profile';
-// import { LoginPage, SignUpPage } from 'pages/login';
+import { LoginPage, SignUpPage } from 'pages/login';
 import { GuestPage } from 'pages/commons/guest.page';
-import CssBaseline from '@mui/material/CssBaseline';
+import { CssBaseline } from '@mui/material';
 
 export { App };
 
 function App() {
-  // init custom history object to allow navigation from
-  // anywhere in the react app (inside or outside components)
   history.navigate = useNavigate();
   history.location = useLocation();
 
   return (
-    <React.Fragment>
+    <Fragment>
       <CssBaseline />
       <Nav />
+      <MessageSnackBar />
 
       <Routes>
-        <Route path="/" element={ <PrivateRoute> <Home /> </PrivateRoute> } />
-        <Route path="/user/:id" element={ <PrivateRoute> <Profile /> </PrivateRoute> } />
-        <Route path="/login" element={<GuestPage />} />
-        {/* <Route path="/register" element={<SignUpPage />} /> */}
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              {' '}
+              <Home />{' '}
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/user/:id"
+          element={
+            <PrivateRoute>
+              {' '}
+              <Profile />{' '}
+            </PrivateRoute>
+          }
+        />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<SignUpPage />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-    </React.Fragment>
+    </Fragment>
   );
 }

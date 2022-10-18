@@ -1,13 +1,13 @@
-import { useEffect, useState, Fragment } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, Fragment } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { fetchWrapper } from 'helpers';
 import { IconButton, Typography } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { red } from '@mui/material/colors';
-import { postLikeGet, postLikePost } from '../../features/posts/posts.actions';
+import { postLikePost } from '../../features/posts/posts.actions';
 
 export { LikeUnlike };
+
 /**
  * Component for like and unlike a post
  *
@@ -18,16 +18,13 @@ function LikeUnlike(props) {
   const dispatch = useDispatch();
   const [counterLike, setCounterLike] = useState(props.countLikes);
   const [likeUnlike, setLikeUnlike] = useState(props.isLiked);
-  const postUrl = `${process.env.REACT_APP_API_URL}/api/posts-likes`;
 
-  // console.log(props.postId);
-
-  // Post like or unlike to backend with fetchWrapper
+  // Post like or unlike to backend with reducer action
   const likeUnlikePost = async () => {
     dispatch(postLikePost(props.postId));
   };
 
-  // Onclik like button change like counter and send to backend
+  // Onclick like button change like counter, send to backend and update global state in Redux
   function handleSubmit(e) {
     e.preventDefault();
     if (likeUnlike === true) {

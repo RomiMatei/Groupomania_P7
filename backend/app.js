@@ -1,3 +1,4 @@
+const compression = require('compression')
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
@@ -19,7 +20,7 @@ var corsOptions = {
 }
 
 app.use(cors(corsOptions))
-
+app.use(compression())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 

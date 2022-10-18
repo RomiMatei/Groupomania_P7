@@ -5,14 +5,10 @@ const name = 'posts';
 const postBaseUrlAllGet = `${process.env.REACT_APP_API_URL}/api/posts-all`;
 const postBaseUrlGet = `${process.env.REACT_APP_API_URL}/api/posts-get`;
 const baseUrlCreate = `${process.env.REACT_APP_API_URL}/api/posts-create`;
+const baseUrlEdit = `${process.env.REACT_APP_API_URL}/api/posts-update`;
 const postBaseUrlDelete = `${process.env.REACT_APP_API_URL}/api/posts-delete`;
 const likeBaseUrlGetPost = `${process.env.REACT_APP_API_URL}/api/posts-likes`;
 
-// export const postCreate = createAsyncThunk(
-//   `${name}/createPosts`,
-//   async ({author, content, image}, { rejectWithValue }) =>
-//     await fetchWrapper.post(baseUrlCreate, {author, content, image})
-// );
 export const postCreate = createAsyncThunk(
   `${name}/createPosts`,
   async (data, { rejectWithValue }) =>
@@ -24,10 +20,10 @@ export const postAll = createAsyncThunk(
   async () => await fetchWrapper.get(postBaseUrlAllGet)
 );
 
-export const postGet = createAsyncThunk(
-  `${name}/getPost`,
-  async (id, { rejectWithValue }) =>
-    await fetchWrapper.get(`${postBaseUrlGet}/${id}`)
+export const postEdit = createAsyncThunk(
+  `${name}/editPosts`,
+  async (data, { rejectWithValue }) =>
+    await fetchWrapper.put(baseUrlEdit, data)
 );
 
 export const postDelete = createAsyncThunk(
@@ -45,7 +41,5 @@ export const postLikeGet = createAsyncThunk(
 export const postLikePost = createAsyncThunk(
   `${name}/postLikePost`,
   async (data, { rejectWithValue }) =>
-    // await fetchWrapper.post(likeBaseUrlGetPost, data)
     await fetchWrapper.post(`${likeBaseUrlGetPost}/${data}`)
-
 );

@@ -62,27 +62,11 @@ function CreatePost() {
 
   const onFormSubmit = () => {
     const formData = new FormData();
-    // const formData = {
-    //   author: postAuthor,
-    //   content: postContent,
-    //   image: postImage
-    // };
-
     formData.append('author', postAuthor);
     formData.append('content', postContent);
     formData.append('image', postImage);
-    // formData .image = postImage;
-    // console.log(formData);
-    // console.log(postImage);
-    // Display the key/value pairs
-    // for (var pair of formData.entries()) {
-    //   console.log(pair[0] + ', ' + pair[1]);
-    // };
 
-    dispatch(
-      // postCreate({ author: postAuthor, content: postContent, image: postImage })
-      postCreate(formData)
-    );
+    dispatch(postCreate(formData));
     handleReset();
   };
 

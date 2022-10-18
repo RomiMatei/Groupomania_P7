@@ -38,7 +38,7 @@ exports.allUsers = async (req, res, next) => {
   } else {
     userId = null
   }
-  allUsers = await User.findAll({
+  const allUsers = await User.findAll({
     where: {
       id: {
         [Sequelize.Op.not]: userId.id,
@@ -82,7 +82,7 @@ exports.userGet = async (req, res, next) => {
     const id = req.params.id
 
     if (id) {
-      currentUser = await User.findByPk(req.params.id)
+      const currentUser = await User.findByPk(req.params.id)
       if (currentUser.image) {
         currentUser.image =
           process.env.BACKEND_URL + '/images/' + currentUser.image
@@ -99,58 +99,65 @@ exports.userGet = async (req, res, next) => {
 }
 
 exports.userUpdate = async (req, res, next) => {
-  const id = req.params.id
-  var datas = req.body
+  const id = req.body.id
+  const datas = req.body
+  console.log(datas)
 
-  // Si change d'avatar ou d'image de couverture
+  // If change avatar
   if (req.file) {
     if (req.file.fieldname === 'image') {
-      var datas = {
-        image: req.file.filename,
-      }
-    }
-    if (req.file.fieldname === 'image_cover') {
-      var datas = {
-        image_cover: req.file.filename,
-      }
+      datas['image'] = req.file.filename
     }
   }
 
-  if (datas.image) {
-    const userGetImage = await User.findByPk(id)
+  // if new avatar, delete old image file
+  // if (datas.image) {
+  //   const userGetImage = await User.findByPk(id)
 
-    if (userGetImage.image) {
-      fs.unlink(`backend/public/images/${userGetImage.image}`, (err) => {
-        if (err) {
-          console.log(err)
-        }
-      })
-    }
-  }
+  //   if (userGetImage.image) {
+  //     fs.unlink(`public/images/${userGetImage.image}`, (err) => {
+  //       if (err) {
+  //         console.log(err)
+  //       }
+  //     })
+  //   }
+  // }
 
-  // Si l'utilisateur change de mot de passe on le crypte
+  // If user change her password, crypt new password
   if (datas.password) {
     const newPassword = bcrypt.hashSync(datas.password, 8)
-    datas = { password: newPassword }
+    datas['password'] = newPassword
   }
 
+  // Send news datas to DB
   User.update(datas, {
     where: { id: id },
   })
     .then((user) => {
-      if (user == 1) {
+      if (user == 2) {
+        // if user is admin return message
         res.status(200).json({
-          message: 'Profil Admin mis à jour.',
+          message: {
+            message: 'Profil Admin mis à jour.',
+            severity: 'success',
+          },
         })
       } else {
+        // if user is not admin return message
         res.status(200).json({
-          message: `Votre profile est mis à jour!`,
+          message: {
+            message: `Votre profile est mis à jour!`,
+            severity: 'success',
+          },
         })
       }
     })
-    .catch((err) => {
+    .catch(() => {
       res.status(500).json({
-        message: 'Erreur de mise à jour du profile',
+        message: {
+          message: 'Erreur de mise à jour du profile',
+          severity: 'error',
+        },
       })
     })
 }

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { history } from 'helpers';
 import { Login } from 'components/loginRegister/login';
 
@@ -8,9 +8,7 @@ import { Container, Paper, Box } from '@mui/material';
 export { LoginPage };
 
 function LoginPage() {
-  // const dispatch = useDispatch();
   const authUser = useSelector((x) => x.auth.user);
-  // const authError = useSelector((x) => x.auth.error);
 
   useEffect(() => {
     // redirect to home if already logged in

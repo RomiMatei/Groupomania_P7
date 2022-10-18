@@ -4,7 +4,7 @@ import { history } from 'helpers';
 
 import { useSelector, useDispatch } from 'react-redux';
 
-import { authActions } from 'features';
+import { logout } from 'features';
 
 import {
   AppBar,
@@ -26,7 +26,9 @@ export { Nav };
 function Nav() {
   const authUser = useSelector((x) => x.auth.user);
   const dispatch = useDispatch();
-  const logout = () => dispatch(authActions.logout());
+  const logoutClick = () => {
+    dispatch(logout());
+  };
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -171,7 +173,7 @@ function Nav() {
               <MenuItem key="1" onClick={getMyProfile}>
                 <Typography textAlign="center">Editer Mon Profil</Typography>
               </MenuItem>
-              <MenuItem key="2" onClick={logout}>
+              <MenuItem key="2" onClick={logoutClick}>
                 <Typography textAlign="center">Déconnexion</Typography>
               </MenuItem>
             </Menu>
