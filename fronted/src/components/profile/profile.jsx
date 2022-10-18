@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 
 import { ProfileEditComponent } from './profile-edit';
+import { isEditMode } from 'features';
 // import { postAll } from '../../features/posts/posts.actions';
 import './profile.css';
 import {
@@ -25,8 +26,9 @@ function ProfileComponent() {
   const { register, handleSubmit } = useForm();
 
   const user = useSelector((state) => state.auth.user);
+  const isEditModeSet = useSelector((state) => state.auth.isEditMode);
   const [userImage, setUserImage] = useState(null);
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState(user.isEditMode);
   const [formImage, setFormImage] = useState(userImage);
   const [formMail, setFormMail] = useState(user.email);
 
@@ -42,7 +44,8 @@ function ProfileComponent() {
   };
 
   const handleEdit = () => {
-    setIsEdit(true);
+    // setIsEdit(true);
+    dispatch(isEditMode());
   };
 
   return (
@@ -51,7 +54,7 @@ function ProfileComponent() {
         <Typography variant="h1" gutterBottom className="profileTitle">
           Mon Profile
         </Typography>
-        {!isEdit && (
+        {!isEditModeSet && (
           <Fragment>
             <Avatar
               aria-label="recipe"
@@ -68,7 +71,7 @@ function ProfileComponent() {
           </Fragment>
         )}
 
-        {isEdit && (
+        {isEditModeSet && (
           <ProfileEditComponent/>
         )}
       </Paper>
