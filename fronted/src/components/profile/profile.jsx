@@ -4,20 +4,14 @@ import { useForm } from 'react-hook-form';
 
 import { ProfileEditComponent } from './profile-edit';
 import { isEditMode } from 'features';
-// import { postAll } from '../../features/posts/posts.actions';
 import './profile.css';
 import {
   Button,
-  Grid,
-  Input,
   Box,
   Paper,
   Typography,
-  TextField,
-  IconButton,
   Avatar
 } from '@mui/material';
-import { PhotoCamera } from '@mui/icons-material';
 
 export { ProfileComponent };
 
@@ -44,7 +38,6 @@ function ProfileComponent() {
   };
 
   const handleEdit = () => {
-    // setIsEdit(true);
     dispatch(isEditMode());
   };
 
