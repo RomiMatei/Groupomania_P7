@@ -11,12 +11,9 @@ module.exports = function (app) {
     next()
   })
 
-  app.get('/api/public', controller.allAccess)
-
-  app.get('/api/home', [authJwt.tokenCheck], controller.homePage)
 
   app.get('/api/users', [authJwt.tokenCheck], controller.allUsers)
-  app.get('/api/me', [authJwt.tokenCheck], controller.myProfile)
+  // app.get('/api/me', [authJwt.tokenCheck], controller.myProfile)
   app.get('/api/user/:id', [authJwt.tokenCheck], controller.userGet)
   app.delete('/api/user/:id', [authJwt.tokenCheck], controller.userDelete)
   app.put(
@@ -24,18 +21,6 @@ module.exports = function (app) {
     [authJwt.tokenCheck],
     multer,
     controller.userUpdate
-  )
-
-  app.get(
-    '/api/mod',
-    [authJwt.tokenCheck, authJwt.isModerator],
-    controller.moderatorBoard
-  )
-
-  app.get(
-    '/api/admin',
-    [authJwt.tokenCheck, authJwt.isAdmin],
-    controller.adminBoard
   )
   app.get('/api/role/:id', [authJwt.tokenCheck], controller.checkRole)
   app.put('/api/role/:id', [authJwt.tokenCheck], controller.setRole)

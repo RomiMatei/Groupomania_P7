@@ -35,7 +35,6 @@ const auth = createSlice({
       state.loading = false;
       if (payload) {
         const user = payload;
-        console.log(payload);
         localStorage.setItem('user', JSON.stringify(user));
         state.user = user;
         const { from } = history.location.state || { from: { pathname: '/' } };

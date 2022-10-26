@@ -12,7 +12,7 @@ exports.postLike = async (req, res, next) => {
   })
   const result = { userLiked: 0 }
 
-  // if user is liked remove her like else create like
+  // if user has a like remove his like else create like
   if (likeDislike.length > 0) {
     await Like.destroy({
       where: { post_id: postId, user_id: userId },
@@ -27,7 +27,7 @@ exports.postLike = async (req, res, next) => {
     result['userLiked'] = 1
   }
 
-  // Count total like for this post
+  // Count total likes for this post
   const likeDislikeCount = await Like.findAll({
     where: { post_id: postId },
     raw: true,

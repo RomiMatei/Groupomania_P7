@@ -9,53 +9,41 @@ const db = require('../models/index')
 const User = db.users
 const Role = db.user_roles
 
-exports.allAccess = (req, res) => {
-  res.status(200).json('Contenu Public.')
-}
-
-exports.homePage = (req, res) => {
-  res.status(200).json('Page Accueil.')
-}
-
-exports.userBoard = (req, res) => {
-  res.status(200).json('Utilisateur.')
-}
-
-exports.adminBoard = (req, res) => {
-  res.status(200).json('Admin.')
-}
-
-exports.moderatorBoard = (req, res) => {
-  res.status(200).json('Moderateur.')
-}
 
 exports.allUsers = async (req, res, next) => {
-  let userId
-  if (req) {
-    const token = req.headers['x-access-token']
-    const decoded = await jwt.verify(token, config.secret)
-    userId = await User.findByPk(decoded.id)
-  } else {
-    userId = null
-  }
+  let userId = req.userId
+
   const allUsers = await User.findAll({
     where: {
       id: {
-        [Sequelize.Op.not]: userId.id,
+        [Sequelize.Op.not]: userId,
       },
     },
     raw: true,
   })
   allUsers.map((userId) => {
     if (userId.image) {
-      userId.image = process.env.BACKEND_URL + '/images/' + userId.image
-    }
-    if (userId.image_cover) {
-      userId.image_cover =
-        process.env.BACKEND_URL + '/images/' + userId.image_cover
+      userId.image = process.env.BACKEND_URL + '/public/images/' + userId.image
     }
   })
   res.status(200).json(allUsers)
+}
+
+exports.userGet = async (req, res, next) => {
+  try {
+    const id = req.params.id
+
+    if (id) {
+      const currentUser = await User.findByPk(req.params.id)
+      if (currentUser.image) {
+        currentUser.image =
+          process.env.BACKEND_URL + '/images/' + currentUser.image
+      }
+      res.status(200).json(currentUser)
+    }
+  } catch (err) {
+    res.status(500).json('Utilisateur non trouvé!')
+  }
 }
 
 exports.myProfile = async (req, res, next) => {
@@ -77,26 +65,6 @@ exports.myProfile = async (req, res, next) => {
   }
 }
 
-exports.userGet = async (req, res, next) => {
-  try {
-    const id = req.params.id
-
-    if (id) {
-      const currentUser = await User.findByPk(req.params.id)
-      if (currentUser.image) {
-        currentUser.image =
-          process.env.BACKEND_URL + '/images/' + currentUser.image
-      }
-      if (currentUser.image_cover) {
-        currentUser.image_cover =
-          process.env.BACKEND_URL + '/images/' + currentUser.image_cover
-      }
-      res.status(200).json(currentUser)
-    }
-  } catch (err) {
-    res.status(500).json('Utilisateur non trouvé!')
-  }
-}
 
 exports.userUpdate = async (req, res, next) => {
   const id = req.body.id
@@ -110,20 +78,7 @@ exports.userUpdate = async (req, res, next) => {
     }
   }
 
-  // if new avatar, delete old image file
-  // if (datas.image) {
-  //   const userGetImage = await User.findByPk(id)
-
-  //   if (userGetImage.image) {
-  //     fs.unlink(`public/images/${userGetImage.image}`, (err) => {
-  //       if (err) {
-  //         console.log(err)
-  //       }
-  //     })
-  //   }
-  // }
-
-  // If user change her password, crypt new password
+  // If user change his password, crypt new password
   if (datas.password) {
     const newPassword = bcrypt.hashSync(datas.password, 8)
     datas['password'] = newPassword

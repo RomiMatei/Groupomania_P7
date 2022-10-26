@@ -45,7 +45,7 @@ exports.signin = async (req, res) => {
       if (!passwordIsValid) {
         return res.status(401).json({
           message: {
-            message: 'Mot de passe incorrecte',
+            message: 'Mot de passe incorrect',
             severity: 'error',
           },
         })
@@ -58,7 +58,7 @@ exports.signin = async (req, res) => {
 
       // return user image url with backend variable
       if (user.image) {
-        user.image = process.env.BACKEND_URL + '/images/' + user.image
+        user.image = process.env.BACKEND_URL + '/public/images/' + user.image
       }
       return res.status(200).json({
         id: user.id,

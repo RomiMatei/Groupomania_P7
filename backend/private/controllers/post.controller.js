@@ -26,7 +26,7 @@ exports.createPost = async (req, res, next) => {
       }
       if (createdPost.dataValues.image) {
         const imageName = createdPost.dataValues.image
-        createdPost.dataValues.image = `${process.env.BACKEND_URL}/images/${imageName}`
+        createdPost.dataValues.image = `${process.env.BACKEND_URL}/public/images/${imageName}`
       }
       res.status(200).json(createdPost)
     })
