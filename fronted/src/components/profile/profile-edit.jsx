@@ -126,7 +126,6 @@ function ProfileEditComponent() {
             <TextField
               variant="outlined"
               margin="normal"
-              required
               fullWidth
               name="password"
               label="Mot de passe"
@@ -140,7 +139,6 @@ function ProfileEditComponent() {
             <TextField
               variant="outlined"
               margin="normal"
-              required
               fullWidth
               name="passwordConfirmation"
               label="Confirmez le mot de passe"
