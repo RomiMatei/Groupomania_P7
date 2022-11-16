@@ -81,6 +81,7 @@ function CreatePost() {
             value={postContent}
             fullWidth
             multiline
+            required
             rows={3}
             variant="standard"
           />
