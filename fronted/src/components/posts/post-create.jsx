@@ -36,6 +36,7 @@ function CreatePost() {
   }
 
   const selectFile = (event) => {
+    console.log('test')
     setPostImage(event.target.files[0]);
     setPostImagePreview(URL.createObjectURL(event.target.files[0]));
   };
@@ -88,6 +89,7 @@ function CreatePost() {
           <Button
             variant="contained"
             color="primary"
+            component="label"
             startIcon={<InsertPhoto />}
           >
             Image
