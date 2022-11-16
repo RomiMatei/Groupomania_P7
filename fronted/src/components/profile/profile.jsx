@@ -1,6 +1,5 @@
 import { useEffect, useState, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useForm } from 'react-hook-form';
 
 import { ProfileEditComponent } from './profile-edit';
 import { isEditMode } from 'features';
@@ -17,14 +16,11 @@ export { ProfileComponent };
 
 function ProfileComponent() {
   const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
 
   const user = useSelector((state) => state.auth.user);
   const isEditModeSet = useSelector((state) => state.auth.isEditMode);
   const [userImage, setUserImage] = useState(null);
-  const [isEdit, setIsEdit] = useState(user.isEditMode);
-  const [formImage, setFormImage] = useState(userImage);
-  const [formMail, setFormMail] = useState(user.email);
+
 
   useEffect(() => {
     checkUserImage();
@@ -34,6 +30,9 @@ function ProfileComponent() {
   const checkUserImage = () => {
     if (!user.image) {
       setUserImage('https://bootdey.com/img/Content/avatar/avatar7.png');
+    }
+    if (user.image) {
+      setUserImage(user.image);
     }
   };
 

@@ -9,7 +9,6 @@ const db = require('../models/index')
 const User = db.users
 const Role = db.user_roles
 
-
 exports.allUsers = async (req, res, next) => {
   let userId = req.userId
 
@@ -21,9 +20,9 @@ exports.allUsers = async (req, res, next) => {
     },
     raw: true,
   })
-  allUsers.map((userId) => {
-    if (userId.image) {
-      userId.image = process.env.BACKEND_URL + '/public/images/' + userId.image
+  allUsers.map((user) => {
+    if (user.image) {
+      user.image = process.env.BACKEND_URL + '/images/' + user.image
     }
   })
   res.status(200).json(allUsers)
@@ -39,6 +38,7 @@ exports.userGet = async (req, res, next) => {
         currentUser.image =
           process.env.BACKEND_URL + '/images/' + currentUser.image
       }
+
       res.status(200).json(currentUser)
     }
   } catch (err) {
@@ -65,56 +65,74 @@ exports.myProfile = async (req, res, next) => {
   }
 }
 
-
 exports.userUpdate = async (req, res, next) => {
   const id = req.body.id
   const datas = req.body
-  console.log(datas)
 
-  // If change avatar
-  if (req.file) {
-    if (req.file.fieldname === 'image') {
-      datas['image'] = req.file.filename
-    }
-  }
+  try {
+    // If change avatar
+    if (req.file) {
+      if (req.file.fieldname === 'image') {
+        datas['image'] = req.file.filename
 
-  // If user change his password, crypt new password
-  if (datas.password) {
-    const newPassword = bcrypt.hashSync(datas.password, 8)
-    datas['password'] = newPassword
-  }
-
-  // Send news datas to DB
-  User.update(datas, {
-    where: { id: id },
-  })
-    .then((user) => {
-      if (user == 2) {
-        // if user is admin return message
-        res.status(200).json({
-          message: {
-            message: 'Profil Admin mis à jour.',
-            severity: 'success',
-          },
-        })
-      } else {
-        // if user is not admin return message
-        res.status(200).json({
-          message: {
-            message: `Votre profile est mis à jour!`,
-            severity: 'success',
-          },
-        })
+        // Remove old image
+        const currentUser = await User.findByPk(id)
+        try {
+          fs.unlink(`public/images/${currentUser.image}`, (err) => {
+            if (err) {
+              res.status(404).json({
+                message: {
+                  message: err,
+                  severity: 'error',
+                },
+              })
+            }
+          }) // end unlink
+        } catch (err) {
+          res.status(404).json({
+            message: {
+              message: err,
+              severity: 'error',
+            },
+          })
+        }
       }
+    }
+
+    // If user change his password, crypt new password
+    if (datas.password) {
+      const newPassword = bcrypt.hashSync(datas.password, 8)
+      datas['password'] = newPassword
+    }
+
+    const dataValues = {}
+
+    // Send news datas to DB
+    const result = await User.update(datas, {
+      where: { id: id },
     })
-    .catch(() => {
-      res.status(500).json({
-        message: {
-          message: 'Erreur de mise à jour du profile',
-          severity: 'error',
-        },
-      })
+
+    if (datas['image']) {
+      dataValues['image'] =
+        process.env.BACKEND_URL + '/images/' + datas['image']
+    }
+
+    res.status(200).json({
+      result,
+      dataValues,
+      message: {
+        message: `Votre profile est mis à jour!`,
+        severity: 'success',
+      },
     })
+  } catch (err) {
+    res.status(500).json({
+      message: {
+        message: 'Erreur de mise à jour du profile',
+        severity: 'error',
+      },
+    })
+  }
 }
 
 exports.userDelete = async (req, res) => {
@@ -127,31 +145,46 @@ exports.userDelete = async (req, res) => {
     const decoded = await jwt.verify(token, config.secret)
     currentUser = await User.findByPk(decoded.id)
     currentUserRole = await Role.findOne({
-      where: { roleId: 3, userId: currentUser.user_id },
+      where: { roleId: 2, userId: currentUser.user_id },
       raw: true,
     })
   } else {
     currentUser = null
   }
 
-  if (userId !== currentUser.id || currentUserRole.roleId === 3) {
-    const deletUser = await User.findByPk(userId)
+  if (userId !== currentUser.id || currentUserRole.role === 2) {
+    const deleteUser = await User.findByPk(userId)
     try {
       User.destroy({
         where: { id: userId },
-      }).then((val) => {
-        if (deletUser.image) {
-          fs.unlink(`backend/public/images/${deletUser.image}`, (err) => {
+      }).then(() => {
+        if (deleteUser.image) {
+          fs.unlink(`public/images/${deleteUser.image}`, (err) => {
             if (err) {
-              res.status(500).json({ message: err })
+              res.status(500).json({
+                message: {
+                  message: err,
+                  severity: 'error',
+                },
+              })
             }
           })
         }
       })
 
-      res.status(200).json({ message: 'Profile supprimé' })
+      res.status(200).json({
+        message: {
+          message: 'Profile supprimé',
+          severity: 'success',
+        },
+      })
     } catch (err) {
-      res.status(500).json({ message: err })
+      res.status(500).json({
+        message: {
+          message: 'Impossible de supprimer le profil',
+          severity: 'error',
+        },
+      })
     }
   }
 }

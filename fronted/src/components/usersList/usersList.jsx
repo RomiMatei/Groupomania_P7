@@ -37,7 +37,7 @@ function UsersList() {
                 <ListItemAvatar>
                   <Avatar
                     alt={user.email}
-                    src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                    src={user.image}
                   />
                 </ListItemAvatar>
                 <ListItemText

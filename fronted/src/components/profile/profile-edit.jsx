@@ -39,12 +39,14 @@ function ProfileEditComponent() {
 
   const checkUserImage = () => {
     if (!user.image) {
-      setUserImage('https://bootdey.com/img/Content/avatar/avatar7.png');
+      setFormImagePreview('https://bootdey.com/img/Content/avatar/avatar7.png');
+    }
+    if (user.image) {
+      setFormImagePreview(user.image)
     }
   };
 
   const selectFile = (event) => {
-    console.log(event);
     setFormImage(event.target.files[0]);
     setFormImagePreview(URL.createObjectURL(event.target.files[0]));
   };
@@ -68,7 +70,7 @@ function ProfileEditComponent() {
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors, isSubmitting } = formState;
 
-  const onFormEditSubmit = ({ email, password, formImage }) => {
+  const onFormEditSubmit = ({ email, password }) => {
     const formData = new FormData();
     formData.append('id', user.id);
     formData.append('email', email);

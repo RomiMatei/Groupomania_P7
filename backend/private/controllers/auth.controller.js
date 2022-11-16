@@ -56,17 +56,21 @@ exports.signin = async (req, res) => {
         expiresIn: 86400, // 24 hours
       })
 
-      // return user image url with backend variable
-      if (user.image) {
-        user.image = process.env.BACKEND_URL + '/public/images/' + user.image
-      }
-      return res.status(200).json({
+      const result = {
         id: user.id,
         email: user.email,
-        image: user.image,
         roles: user.role,
         token: token,
-      })
+      }
+
+      // return user image url with backend variable
+      if (!user.image) {
+        result['image'] = "https://bootdey.com/img/Content/avatar/avatar7.png"
+      } else {
+        result['image'] = process.env.BACKEND_URL + '/images/' + user.image
+      }
+
+      return res.status(200).json(result)
     })
   } catch (err) {
     res
