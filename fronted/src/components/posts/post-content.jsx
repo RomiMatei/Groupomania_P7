@@ -33,6 +33,7 @@ function PostContent(props) {
   const [canEdit, setCanEdit] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [author, setAuthor] = useState(undefined);
+  const [authorImage, setAuthorImage] = useState(undefined);
   const post = props.post;
 
   useEffect(() => {
@@ -47,6 +48,8 @@ function PostContent(props) {
     const getUrl = `${process.env.REACT_APP_API_URL}/api/user/${post.author}`;
     let res = await fetchWrapper.get(getUrl);
     const author_name = res.email;
+    console.log(res);
+    setAuthorImage(res.image);
     setAuthor(author_name);
   };
 
@@ -82,7 +85,7 @@ function PostContent(props) {
     <Fragment>
       <Card sx={{ marginBottom: 3 }} key={post.id}>
         <CardHeader
-          avatar={<Avatar src={user.image} alt={`avatar-user`} />}
+          avatar={<Avatar src={authorImage} alt={`avatar-user`} />}
           title={author}
           subheader={dateCreate}
         />
