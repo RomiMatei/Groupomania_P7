@@ -34,6 +34,7 @@ function EditPost(props) {
   };
 
   const selectEditFile = (event) => {
+    console.log('test')
     setPostImage(event.target.files[0]);
     setPostImagePreview(URL.createObjectURL(event.target.files[0]));
   };
