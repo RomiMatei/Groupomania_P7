@@ -23,26 +23,14 @@ export { CreatePost };
 
 function CreatePost() {
   const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
-  // const { posts } = useSelector((x) => x.posts);
+  const { handleSubmit } = useForm();
   const user = JSON.parse(localStorage.getItem('user'));
   const [postContent, setPostContent] = useState('');
   const [postImage, setPostImage] = useState(undefined);
   const [postImagePreview, setPostImagePreview] = useState(undefined);
   const [postAuthor, setPostAuthor] = useState(user.id);
 
-  // const validationSchema = Yup.object().shape({
-  //   content: Yup.string().required('Contenu requis'),
-  //   author: Yup.string().required('Auteur')
-  // });
-  // const formOptions = { resolver: yupResolver(validationSchema) };
-  // const { register, handleSubmit, formState } = useForm(formOptions);
-  // const { errors, isSubmitting } = formState;
 
-  // function onSubmit({ content, author }) {
-  //   console.log(content);
-  //   return dispatch(postsActions.createPosts({ content, author }));
-  // }
   // Add form onSubmit handler:
   function handleReset() {
     setPostContent('');
