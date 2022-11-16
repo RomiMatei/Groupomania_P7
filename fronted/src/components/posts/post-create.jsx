@@ -1,10 +1,6 @@
-import { useEffect, useCallback, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
-
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-
 import { postCreate } from '../../features/posts/posts.actions';
 
 import {
@@ -83,38 +79,31 @@ function CreatePost() {
             label="Message"
             value={postContent}
             fullWidth
-            // id="content"
             multiline
             rows={3}
             variant="standard"
-            // {...register('content')}
-            // error={errors.content ? true : false}
           />
         </CardContent>
-        <CardActions>
+        <CardActions sx={{ justifyContent: 'flex-end' }}>
           <Button
             variant="contained"
-            component="label"
             color="primary"
             startIcon={<InsertPhoto />}
           >
-            Insérer une image
+            Image
             <Input
-              // id="image"
               name="image"
               hidden
               style={{ display: 'none' }}
               type="file"
               accept="image/*"
               onChange={selectFile}
-              // {...register('image')}
             />
           </Button>
           <Button
             type="submit"
             variant="contained"
             color="secondary"
-            // disabled={!this.state.valid_form === true}
             startIcon={<Send />}
           >
             Poster

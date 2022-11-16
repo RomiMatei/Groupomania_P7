@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 import { history } from 'helpers';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,13 +13,13 @@ import {
   Menu,
   Typography,
   MenuItem,
-  Button,
+  Link,
   Toolbar,
   IconButton,
   Tooltip,
   Avatar
 } from '@mui/material';
-import { Home, MenuOpen, HomeMaxRounded } from '@mui/icons-material';
+import { Home, MenuOpen } from '@mui/icons-material';
 
 export { Nav };
 
@@ -55,25 +55,18 @@ function Nav() {
   // only show nav when logged in
   if (!authUser) return null;
 
-  // return (
-  //     <nav className="navbar navbar-expand navbar-dark bg-dark">
-  //         <div className="navbar-nav">
-  //             <NavLink to="/" className="nav-item nav-link">Home</NavLink>
-  //             <button onClick={logout} className="btn btn-link nav-item nav-link">Logout</button>
-  //         </div>
-  //     </nav>
-  // );
-
   return (
     <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Home sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
+          <Link
+            onClick={() => {
+              history.navigate(`/`);
+            }}
+            component="button"
+            underline="none"
             variant="h6"
-            noWrap
-            component={Link}
-            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -83,8 +76,7 @@ function Nav() {
             }}
           >
             Groupomania
-          </Typography>
-
+          </Link>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -114,10 +106,10 @@ function Nav() {
                 display: { xs: 'block', md: 'none' }
               }}
             >
-              <Typography textAlign="center">Test</Typography>
+              <Typography textAlign="center"> Test Menu </Typography>
             </Menu>
           </Box>
-          <HomeMaxRounded sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          {/* <HomeMaxRounded sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -135,7 +127,24 @@ function Nav() {
             }}
           >
             LOGO
-          </Typography>
+          </Typography> */}
+          <Link
+            onClick={() => {
+              history.navigate(`/`);
+            }}
+            component="button"
+            underline="none"
+            variant="h6"
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              fontWeight: 700,
+              color: 'inherit',
+              textDecoration: 'none'
+            }}
+          >
+            Groupomania
+          </Link>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {/* {pages.map((page) => (
               <Button
