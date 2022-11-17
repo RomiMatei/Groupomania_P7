@@ -2,6 +2,8 @@ const db = require('../models/index')
 const config = require('../config/authentification.conf')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const fs = require('fs')
+
 const User = db.users
 
 exports.signup = (req, res) => {
@@ -64,11 +66,13 @@ exports.signin = async (req, res) => {
       }
 
       // return user image url with backend variable
-      if (!user.image) {
-        result['image'] = "https://bootdey.com/img/Content/avatar/avatar7.png"
-      } else {
-        result['image'] = process.env.BACKEND_URL + '/images/' + user.image
+      let image = 'https://bootdey.com/img/Content/avatar/avatar7.png'
+      if (user.image) {
+        if (fs.existsSync(`public/images/${user.image}`)) {
+          image = process.env.BACKEND_URL + '/images/' + user.image
+        }
       }
+      result['image'] = image
 
       return res.status(200).json(result)
     })

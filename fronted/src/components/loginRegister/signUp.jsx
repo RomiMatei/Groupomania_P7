@@ -17,10 +17,12 @@ function SignUp() {
   const dispatch = useDispatch();
   const authError = useSelector((x) => x.auth.error);
 
-   // Sign Up form validation rules
+  // Sign Up form validation rules
   const validationSchema = Yup.object().shape({
     email: Yup.string().required('Email requis').email('Email invalide'),
-    password: Yup.string().required('Mot de passe requis'),
+    password: Yup.string()
+      .required('Mot de passe requis')
+      .min(6, 'Mot de passe trop court. 6 Caracteres minimum'),
     passwordConfirmation: Yup.string()
       .label('confirm password')
       .required()

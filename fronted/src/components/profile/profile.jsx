@@ -19,22 +19,21 @@ function ProfileComponent() {
 
   const user = useSelector((state) => state.auth.user);
   const isEditModeSet = useSelector((state) => state.auth.isEditMode);
-  const [userImage, setUserImage] = useState(null);
 
 
-  useEffect(() => {
-    checkUserImage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   // checkUserImage();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
-  const checkUserImage = () => {
-    if (!user.image) {
-      setUserImage('https://bootdey.com/img/Content/avatar/avatar7.png');
-    }
-    if (user.image) {
-      setUserImage(user.image);
-    }
-  };
+  // const checkUserImage = () => {
+  //   if (!user.image) {
+  //     setUserImage('https://bootdey.com/img/Content/avatar/avatar7.png');
+  //   }
+  //   if (user.image) {
+  //     setUserImage(user.image);
+  //   }
+  // };
 
   const handleEdit = () => {
     dispatch(isEditMode());
@@ -51,7 +50,7 @@ function ProfileComponent() {
             <Avatar
               aria-label="recipe"
               className="userAvatar"
-              src={userImage}
+              src={user.image}
               alt={user.email}
             ></Avatar>
             <Typography variant="subtitle1" gutterBottom>

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { authLogin, signUp, profilEdit } from './auth.actions';
+import { authLogin, signUp, profilEdit, myProfile } from './auth.actions';
 import { history } from 'helpers';
 
 // Initial state for Redux store:
@@ -33,9 +33,14 @@ const auth = createSlice({
     [authLogin.fulfilled]: (state, { payload }) => {
       state.loading = false;
       if (payload) {
-        const user = payload;
-        localStorage.setItem('user', JSON.stringify(user));
-        state.user = user;
+        const userStorage = {
+          id: payload.id,
+          roles: payload.roles,
+          token: payload.token,
+          email: payload.email
+        };
+        localStorage.setItem('user', JSON.stringify(userStorage));
+        state.user = payload;
         const { from } = history.location.state || { from: { pathname: '/' } };
         history.navigate(from);
       }
@@ -71,10 +76,28 @@ const auth = createSlice({
       state.loading = false;
       state.success = true;
       state.isEditMode = false;
-      state.user['image'] = payload.dataValues.image
-
+      state.user['image'] = payload.dataValues.image;
     },
     [profilEdit.rejected]: (state, { payload }) => {
+      state.loading = false;
+      state.error = payload;
+    },
+
+    // My Profile get
+    [myProfile.pending]: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    [myProfile.fulfilled]: (state, { payload }) => {
+      state.loading = false;
+      state.success = true;
+      const data = JSON.parse(window.localStorage.getItem('user'));
+      delete payload.password;
+      payload['token'] = data.token;
+      state.user = payload;
+
+    },
+    [myProfile.rejected]: (state, { payload }) => {
       state.loading = false;
       state.error = payload;
     }

@@ -48,7 +48,7 @@ function PostContent(props) {
     const getUrl = `${process.env.REACT_APP_API_URL}/api/user/${post.author}`;
     let res = await fetchWrapper.get(getUrl);
     const author_name = res.email;
-    console.log(res);
+    // console.log(res);
     setAuthorImage(res.image);
     setAuthor(author_name);
   };

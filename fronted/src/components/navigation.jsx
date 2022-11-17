@@ -1,10 +1,11 @@
-import * as React from 'react';
 // import { NavLink } from 'react-router-dom';
+import { useEffect, useState, Fragment } from 'react';
 import { history } from 'helpers';
 
 import { useSelector, useDispatch } from 'react-redux';
 
 import { logout } from 'features';
+import { myProfile } from '../features/users/auth.actions';
 
 import {
   AppBar,
@@ -13,13 +14,20 @@ import {
   Menu,
   Typography,
   MenuItem,
+  ListItemIcon,
   Link,
   Toolbar,
   IconButton,
   Tooltip,
   Avatar
 } from '@mui/material';
-import { Home, MenuOpen } from '@mui/icons-material';
+import {
+  Home,
+  MenuOpen,
+  Settings,
+  List,
+  Logout
+} from '@mui/icons-material';
 
 export { Nav };
 
@@ -30,8 +38,16 @@ function Nav() {
     dispatch(logout());
   };
 
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const open = Boolean(anchorElUser);
+
+  useEffect(() => {
+    if (window.localStorage.getItem('user')) {
+      dispatch(myProfile());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -109,25 +125,7 @@ function Nav() {
               <Typography textAlign="center"> Test Menu </Typography>
             </Menu>
           </Box>
-          {/* <HomeMaxRounded sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none'
-            }}
-          >
-            LOGO
-          </Typography> */}
+
           <Link
             onClick={() => {
               history.navigate(`/`);
@@ -159,31 +157,60 @@ function Nav() {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              <IconButton
+                onClick={handleOpenUserMenu}
+                sx={{ p: 0 }}
+                aria-controls={open ? 'account-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+              >
+                <Avatar alt="Remy Sharp" src={authUser.image} />
               </IconButton>
             </Tooltip>
+
             <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
               anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right'
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right'
-              }}
-              open={Boolean(anchorElUser)}
+              id="account-menu"
+              open={open}
               onClose={handleCloseUserMenu}
+              onClick={handleCloseUserMenu}
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: 'visible',
+                  filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                  mt: 1.5,
+                  '& .MuiAvatar-root': {
+                    width: 32,
+                    height: 32,
+                    ml: -0.5,
+                    mr: 1
+                  },
+                  '&:before': {
+                    content: '""',
+                    display: 'block',
+                    position: 'absolute',
+                    top: 0,
+                    right: 14,
+                    width: 10,
+                    height: 10,
+                    bgcolor: 'background.paper',
+                    transform: 'translateY(-50%) rotate(45deg)',
+                    zIndex: 0
+                  }
+                }
+              }}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-              <MenuItem key="1" onClick={getMyProfile}>
-                <Typography textAlign="center">Editer Mon Profil</Typography>
+              <MenuItem onClick={getMyProfile}>
+                <Avatar /> Mon Profile
               </MenuItem>
-              <MenuItem key="2" onClick={logoutClick}>
-                <Typography textAlign="center">Déconnexion</Typography>
+              <MenuItem onClick={logoutClick}>
+                <ListItemIcon>
+                  <Logout fontSize="small" />
+                </ListItemIcon>
+                Déconnexion
               </MenuItem>
             </Menu>
           </Box>

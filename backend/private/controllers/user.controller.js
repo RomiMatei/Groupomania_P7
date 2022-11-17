@@ -21,9 +21,14 @@ exports.allUsers = async (req, res, next) => {
     raw: true,
   })
   allUsers.map((user) => {
+    let image = 'https://bootdey.com/img/Content/avatar/avatar7.png'
+
     if (user.image) {
-      user.image = process.env.BACKEND_URL + '/images/' + user.image
+      if (fs.existsSync(`public/images/${user.image}`)) {
+        image = process.env.BACKEND_URL + '/images/' + user.image
+      }
     }
+    user.image = image
   })
   res.status(200).json(allUsers)
 }
@@ -33,13 +38,16 @@ exports.userGet = async (req, res, next) => {
     const id = req.params.id
 
     if (id) {
-      const currentUser = await User.findByPk(req.params.id)
-      if (currentUser.image) {
-        currentUser.image =
-          process.env.BACKEND_URL + '/images/' + currentUser.image
+      const user = await User.findByPk(req.params.id)
+      let image = 'https://bootdey.com/img/Content/avatar/avatar7.png'
+      if (user.image) {
+        if (fs.existsSync(`public/images/${user.image}`)) {
+          image = process.env.BACKEND_URL + '/images/' + user.image
+        }
       }
+      user.image = image
 
-      res.status(200).json(currentUser)
+      res.status(200).json(user)
     }
   } catch (err) {
     res.status(500).json('Utilisateur non trouvé!')
@@ -47,19 +55,20 @@ exports.userGet = async (req, res, next) => {
 }
 
 exports.myProfile = async (req, res, next) => {
-  let userId
+  let user
   if (req) {
     const token = req.headers['x-access-token']
     const decoded = await jwt.verify(token, config.secret)
-    userId = await User.findByPk(decoded.id)
-    if (userId.image) {
-      userId.image = process.env.BACKEND_URL + '/images/' + userId.image
+    user = await User.findByPk(decoded.id)
+    let image = 'https://bootdey.com/img/Content/avatar/avatar7.png'
+    if (user.image) {
+      if (fs.existsSync(`public/images/${user.image}`)) {
+        image = process.env.BACKEND_URL + '/images/' + user.image
+      }
     }
-    if (userId.image_cover) {
-      userId.image_cover =
-        process.env.BACKEND_URL + '/images/' + userId.image_cover
-    }
-    res.status(200).json(userId)
+    user.image = image
+
+    res.status(200).json(user)
   } else {
     res.status(500).json('Utilisateur non trouvé!')
   }
@@ -77,24 +86,26 @@ exports.userUpdate = async (req, res, next) => {
 
         // Remove old image
         const currentUser = await User.findByPk(id)
-        try {
-          fs.unlink(`public/images/${currentUser.image}`, (err) => {
-            if (err) {
-              res.status(404).json({
-                message: {
-                  message: err,
-                  severity: 'error',
-                },
-              })
-            }
-          }) // end unlink
-        } catch (err) {
-          res.status(404).json({
-            message: {
-              message: err,
-              severity: 'error',
-            },
-          })
+        if (currentUser.image) {
+          try {
+            fs.unlink(`public/images/${currentUser.image}`, (err) => {
+              if (err) {
+                res.status(404).json({
+                  message: {
+                    message: err,
+                    severity: 'error',
+                  },
+                })
+              }
+            }) // end unlink
+          } catch (err) {
+            res.status(404).json({
+              message: {
+                message: err,
+                severity: 'error',
+              },
+            })
+          }
         }
       }
     }
@@ -112,10 +123,13 @@ exports.userUpdate = async (req, res, next) => {
       where: { id: id },
     })
 
+    let image = 'https://bootdey.com/img/Content/avatar/avatar7.png'
     if (datas['image']) {
-      dataValues['image'] =
-        process.env.BACKEND_URL + '/images/' + datas['image']
+      if (fs.existsSync(`public/images/${datas['image']}`)) {
+        image = process.env.BACKEND_URL + '/images/' + datas['image']
+      }
     }
+    dataValues['image'] = image
 
     res.status(200).json({
       result,

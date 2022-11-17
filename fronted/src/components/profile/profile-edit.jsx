@@ -42,7 +42,7 @@ function ProfileEditComponent() {
       setFormImagePreview('https://bootdey.com/img/Content/avatar/avatar7.png');
     }
     if (user.image) {
-      setFormImagePreview(user.image)
+      setFormImagePreview(user.image);
     }
   };
 
@@ -57,7 +57,9 @@ function ProfileEditComponent() {
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().required('Email requis').email('Email invalide'),
-    password: Yup.string().required('Mot de passe requis'),
+    password: Yup.string()
+      .required('Mot de passe requis')
+      .min(6, 'Mot de passe trop court. 6 Caracteres minimum.'),
     passwordConfirmation: Yup.string()
       .label('confirm password')
       .required()
@@ -73,9 +75,15 @@ function ProfileEditComponent() {
   const onFormEditSubmit = ({ email, password }) => {
     const formData = new FormData();
     formData.append('id', user.id);
-    formData.append('email', email);
-    formData.append('password', password);
-    formData.append('image', formImage);
+    if (email) {
+      formData.append('email', email);
+    }
+    if (password) {
+      formData.append('password', password);
+    }
+    if (formImage) {
+      formData.append('image', formImage);
+    }
 
     dispatch(profilEdit(formData));
   };

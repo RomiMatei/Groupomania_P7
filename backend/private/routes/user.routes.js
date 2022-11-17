@@ -13,7 +13,7 @@ module.exports = function (app) {
 
 
   app.get('/api/users', [authJwt.tokenCheck], controller.allUsers)
-  // app.get('/api/me', [authJwt.tokenCheck], controller.myProfile)
+  app.get('/api/myprofile', [authJwt.tokenCheck], controller.myProfile)
   app.get('/api/user/:id', [authJwt.tokenCheck], controller.userGet)
   app.delete('/api/user/:id', [authJwt.tokenCheck], controller.userDelete)
   app.put(
