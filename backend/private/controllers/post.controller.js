@@ -136,24 +136,26 @@ exports.updatePost = async (req, res, next) => {
 
       // Remove old image
       const currentPost = await Post.findByPk(postId)
-      try {
-        fs.unlink(`public/images/${currentPost.image}`, (err) => {
-          if (err) {
-            res.status(404).json({
-              message: {
-                message: err,
-                severity: 'error',
-              },
-            })
-          }
-        }) // end unlink
-      } catch (err) {
-        res.status(404).json({
-          message: {
-            message: err,
-            severity: 'error',
-          },
-        })
+      if (currentPost.image) {
+        try {
+          fs.unlink(`public/images/${currentPost.image}`, (err) => {
+            if (err) {
+              res.status(404).json({
+                message: {
+                  message: err,
+                  severity: 'error',
+                },
+              })
+            }
+          }) // end unlink
+        } catch (err) {
+          res.status(404).json({
+            message: {
+              message: err,
+              severity: 'error',
+            },
+          })
+        }
       }
     }
   }
@@ -163,15 +165,23 @@ exports.updatePost = async (req, res, next) => {
       author: userId,
       content: req.body.content,
     }
-
+    // build image url
+    if (image) {
+      dataValues['image'] = image
+    }
     // Update a post and return with values. Image field is overwritten for Redux state
     const result = await Post.update(dataValues, {
       where: { id: postId },
     })
 
+    if (dataValues['image']) {
+      if (fs.existsSync(`public/images/${dataValues['image']}`)) {
+        image = process.env.BACKEND_URL + '/images/' + dataValues['image']
+      }
+    }
     // build image url
     if (image) {
-      dataValues['image'] = process.env.BACKEND_URL + '/images/' + image
+      dataValues['image'] = image
     }
     dataValues['id'] = postId
     res.status(200).json({

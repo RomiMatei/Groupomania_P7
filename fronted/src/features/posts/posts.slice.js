@@ -75,10 +75,10 @@ const postsSlice = createSlice({
       state.postsList.map((post) => {
         if (post.id === postId) {
           if (payload.dataValues.content) {
-            post.content = payload.dataValues.content;
+            post['content'] = payload.dataValues.content;
           }
           if (payload.dataValues.image) {
-            post.content = payload.dataValues.image;
+            post['image'] = payload.dataValues.image;
           }
         } else return post;
       });

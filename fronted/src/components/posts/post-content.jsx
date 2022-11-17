@@ -31,10 +31,11 @@ function PostContent(props) {
   const user = JSON.parse(localStorage.getItem('user'));
   const [currentUserRole, setCurrentUserRole] = useState(user.roles);
   const [canEdit, setCanEdit] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
   const [author, setAuthor] = useState(undefined);
   const [authorImage, setAuthorImage] = useState(undefined);
   const post = props.post;
+  const myposts = useSelector((state) => state.posts.postsList);
+  const mypost = myposts.find((item) => item.id === post.id);
 
   useEffect(() => {
     getAuthor();
@@ -55,7 +56,7 @@ function PostContent(props) {
 
   // Check if user can edit post, this owner post or has admin role
   const checkUserRole = () => {
-    if (user.id === post.author) {
+    if (user.id === mypost.author) {
       setCanEdit(true);
     }
     if (user.roles === 2) {
@@ -67,7 +68,7 @@ function PostContent(props) {
   let dateCreate = (
     <div>
       <ReactTimeAgo
-        date={new Date(post.post_created)}
+        date={new Date(mypost.post_created)}
         locale="fr-FR"
         verbose="date"
       />
@@ -76,37 +77,35 @@ function PostContent(props) {
 
   // Delete post
   const handleDelete = () => {
-    dispatch(postDelete(post.id));
+    dispatch(postDelete(mypost.id));
   };
-
-
 
   return (
     <Fragment>
-      <Card sx={{ marginBottom: 3 }} key={post.id}>
+      <Card sx={{ marginBottom: 3 }} key={mypost.id}>
         <CardHeader
           avatar={<Avatar src={authorImage} alt={`avatar-user`} />}
           title={author}
           subheader={dateCreate}
         />
-        {post.image && (
+        {mypost.image && (
           <CardMedia
             component="img"
             height="320"
-            image={post.image}
+            image={mypost.image}
             alt="image-post2"
           />
         )}
         <CardContent>
           <Typography variant="body2" color="textSecondary" component="p">
-            {post.content}
+            {mypost.content}
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
           <LikeUnlike
-            postId={post.id}
-            isLiked={post.isLiked}
-            countLikes={post.countLikes}
+            postId={mypost.id}
+            isLiked={mypost.isLiked}
+            countLikes={mypost.countLikes}
           />
           {canEdit && (
             <Fragment>

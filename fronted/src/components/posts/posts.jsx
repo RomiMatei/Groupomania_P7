@@ -38,6 +38,7 @@ function PostsList() {
       {sortedPosts.length !== 0 && (
         <div className="post-section">
           {sortedPosts.map((postItem) => (
+
             <PostContent key={postItem.id} post={postItem} />
           ))}
         </div>
