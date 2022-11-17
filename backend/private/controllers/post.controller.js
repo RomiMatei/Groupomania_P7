@@ -27,7 +27,11 @@ exports.createPost = async (req, res, next) => {
       if (createdPost.dataValues.image) {
         const imageName = createdPost.dataValues.image
         createdPost.dataValues.image = `${process.env.BACKEND_URL}/images/${imageName}`
+
       }
+      createdPost.dataValues['likes'] = []
+      createdPost.dataValues['isLiked'] = false
+      createdPost.dataValues['countLikes'] = 0
       res.status(200).json(createdPost)
     })
   } catch (err) {
