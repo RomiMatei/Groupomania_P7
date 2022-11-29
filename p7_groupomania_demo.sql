@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mar. 29 nov. 2022 à 10:05
+-- Généré le : mar. 29 nov. 2022 à 14:38
 -- Version du serveur : 8.0.31-0ubuntu0.22.04.1
 -- Version de PHP : 8.1.2-1ubuntu2.9
 
@@ -48,7 +48,10 @@ INSERT INTO `likes` (`id`, `user_id`, `post_id`, `like_date`) VALUES
 (27, 19, 134, '2022-11-29 09:01:14'),
 (28, 20, 138, '2022-11-29 09:03:10'),
 (29, 20, 134, '2022-11-29 09:03:14'),
-(30, 20, 136, '2022-11-29 09:03:17');
+(30, 20, 136, '2022-11-29 09:03:17'),
+(31, 1, 135, '2022-11-29 13:25:07'),
+(32, 1, 137, '2022-11-29 13:25:10'),
+(33, 1, 139, '2022-11-29 13:25:14');
 
 -- --------------------------------------------------------
 
@@ -164,7 +167,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT pour la table `posts`
